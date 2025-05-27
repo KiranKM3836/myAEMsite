@@ -1,18 +1,26 @@
 module.exports = {
-  root: true,
-  extends: 'airbnb-base',
-  env: {
-    browser: true,
+  extends: ['airbnb-base'],
+  rules: {
+    'no-trailing-spaces': 'off',
+    'semi': 'off',
+    'arrow-parens': 'off',
+    'import/newline-after-import': 'off',
+    'comma-spacing': 'off',
+    'quotes': 'off',
+    'object-curly-spacing': 'off',
+    'indent': 'off',
+    'space-infix-ops': 'off',
+    'keyword-spacing': 'off',
+    'eqeqeq': 'off',
+    'space-before-blocks': 'off',
+    'padded-blocks': 'off',
+    'no-multiple-empty-lines': 'off',
   },
   parser: '@babel/eslint-parser',
   parserOptions: {
-    allowImportExportEverywhere: true,
-    sourceType: 'module',
     requireConfigFile: false,
-  },
-  rules: {
-    'import/extensions': ['error', { js: 'always' }], // require js file extensions in imports
-    'linebreak-style': ['error', 'unix'], // enforce unix linebreaks
-    'no-param-reassign': [2, { props: false }], // allow modifying properties of param
+    babelOptions: {
+      presets: ['@babel/preset-env'],
+    },
   },
 };
