@@ -1,18 +1,30 @@
-import { createOptimizedPicture } from '../../scripts/aem.js';
-
 export default function decorate(block) {
-  /* change to ul, li */
-  const ul = document.createElement('ul');
-  [...block.children].forEach((row) => {
-    const li = document.createElement('li');
-    while (row.firstElementChild) li.append(row.firstElementChild);
-    [...li.children].forEach((div) => {
-      if (div.children.length === 1 && div.querySelector('picture')) div.className = 'cards-card-image';
-      else div.className = 'cards-card-body';
-    });
-    ul.append(li);
+  const cards = [...block.children].map((row) => {
+    const cols = row.querySelectorAll('div');
+    const icon = cols[0]?.querySelector('img')?.src 
+    const title = cols[1]?.textContent?.trim();
+    const desc = cols[2]?.textContent?.trim();
+    const ctaText = cols[3]?.textContent?.trim();
+    const ctaUrl = cols[4]?.textContent?.trim();
+
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    card.innerHTML = `
+      <div class="card-icon">
+        <img src="${icon}" alt="${title}" loading="lazy" />
+      </div>
+      <div class="titleWrapper"><div class="card-title"><h3 class="title">${title}</h3></div>
+      <div class="card-desc"><p class="desc">${desc}</p></div></div>
+      <div class="card-cta"><a href="${ctaUrl}" class="cta">${ctaText}</a></div>
+    `;
+
+    return card;
   });
-  ul.querySelectorAll('picture > img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
-  block.textContent = '';
-  block.append(ul);
+
+  block.innerHTML = '';
+  const container = document.createElement('div');
+  container.className = 'cards-container';
+  cards.forEach(card => container.appendChild(card));
+  block.appendChild(container);
 }

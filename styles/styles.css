@@ -88,6 +88,11 @@ header {
   height: var(--nav-height);
 }
 
+nav {
+  background-color: #211F54;
+  color: #F2F1FB;
+}
+
 header .header,
 footer .footer {
   visibility: hidden;
@@ -254,4 +259,66 @@ main .section.highlight {
   background-color: var(--light-color);
   margin: 0;
   padding: 40px 0;
+}
+main {
+  max-width: 1264px;
+  margin: auto;
+  text-align: center;
+}
+
+.pageheadercontent {
+  background-color: #211F54;
+  height: 400px;
+  margin: auto;
+  padding-left: 18%;
+  padding-right: 18%;
+  h1 {
+    color: #F2F1FB;
+    font-family: "Neue Haas Unica Pro", Sans-serif;
+    font-size: 14px;
+    text-transform: uppercase;
+    line-height: 15px;
+    letter-spacing: 6.5px;
+    margin-top: 0px;
+    padding-top: 50px;
+    /* max-width: 700px; */
+  }
+  h2,h3 {
+    color: #F2F1FB;
+    font-family: "Neue Haas Unica Pro", Sans-serif;
+    font-size: 60px;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 48px;
+    line-height: 58px;
+    letter-spacing: 0.6px;
+    /* max-width: 700px; */
+  }
+  h3 {
+    font-size: 38px;
+    line-height: 42px;
+  }
+  p {
+    color: #F2F1FB;
+    font-family: "Neue Haas Unica Pro", Sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    text-transform: capitalize;
+    line-height: 27px;
+    letter-spacing: 0.3px;
+    word-spacing: 5px;
+    /* max-width: 700px; */
+  }
+}
+
+.shadowtextcontent {
+  color: #211F54;
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 52px;
+  text-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+}
+
+main{
+  background-color: #f5f4ff;
 }
