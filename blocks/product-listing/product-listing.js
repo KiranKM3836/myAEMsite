@@ -1,7 +1,7 @@
 export default async function decorate(block) {
     const res = await fetch('https://mesh.rdklizer.com/rest/V1/products/?searchCriteria[pageSize]=12', {
       headers: {
-        'Authorization': 'Bearer eyJraWQiOiIxIiwiYWxnIjoiSFMyNTYifQ.eyJ1aWQiOjEsInV0eXBpZCI6MiwiaWF0IjoxNzQ5MDIzMDQwLCJleHAiOjE3NDkwMjY2NDB9.tc_-5j7DARoscIhu506j-ejmqyRVzGgeddzTCctIy4A'
+        'Authorization': 'Bearer '
       }
     });
   
