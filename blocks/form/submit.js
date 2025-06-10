@@ -1,9 +1,9 @@
-import { DEFAULT_THANK_YOU_MESSAGE, getSubmitBaseUrl } from './constant.js';
+import { DEFAULT_THANK_YOU_MESSAGE } from './constant.js';
 
 export function submitSuccess(e, form) {
-  const { payload } = e;
-  const redirectUrl = form.dataset.redirectUrl || payload?.body?.redirectUrl;
-  const thankYouMsg = form.dataset.thankYouMsg || payload?.body?.thankYouMessage;
+  const redirectUrl = form.dataset.redirectUrl;
+  const thankYouMsg = form.dataset.thankYouMsg;
+
   if (redirectUrl) {
     window.location.assign(encodeURI(redirectUrl));
   } else {
@@ -19,6 +19,7 @@ export function submitSuccess(e, form) {
     }
     form.reset();
   }
+
   form.setAttribute('data-submitting', 'false');
   form.querySelector('button[type="submit"]').disabled = false;
 }
@@ -29,7 +30,7 @@ export function submitFailure(e, form) {
     errorMessage = document.createElement('div');
     errorMessage.className = 'form-message error-message';
   }
-  errorMessage.innerHTML = 'Some error occured while submitting the form'; // TODO: translation
+  errorMessage.innerHTML = 'Some error occured while submitting the form';
   form.prepend(errorMessage);
   errorMessage.scrollIntoView({ behavior: 'smooth' });
   form.setAttribute('data-submitting', 'false');
@@ -43,13 +44,13 @@ function generateUnique() {
 function getFieldValue(fe, payload) {
   if (fe.type === 'radio') {
     return fe.form.elements[fe.name].value;
-  } if (fe.type === 'checkbox') {
+  } else if (fe.type === 'checkbox') {
     if (payload[fe.name]) {
       if (fe.checked) {
         return `${payload[fe.name]},${fe.value}`;
       }
       return payload[fe.name];
-    } if (fe.checked) {
+    } else if (fe.checked) {
       return fe.value;
     }
   } else if (fe.type !== 'file') {
@@ -70,42 +71,21 @@ function constructPayload(form) {
       }
     }
   });
-  return { payload };
-}
-
-async function prepareRequest(form) {
-  const { payload } = constructPayload(form);
-  const headers = {
-    'Content-Type': 'application/json',
-    // eslint-disable-next-line comma-dangle
-    'x-adobe-form-hostname': window?.location?.hostname
-  };
-  const body = { data: payload };
-  let url;
-  let baseUrl = getSubmitBaseUrl();
-  if (!baseUrl) {
-    // eslint-disable-next-line prefer-template
-    baseUrl = 'https://forms.adobe.com/adobe/forms/af/submit/';
-    url = baseUrl + btoa(`${form.dataset.action}.json`);
-  } else {
-    url = form.dataset.action;
-  }
-  return { headers, body, url };
+  return payload;
 }
 
 async function submitDocBasedForm(form, captcha) {
   try {
-    const { headers, body, url } = await prepareRequest(form, captcha);
-    let token = null;
-    if (captcha) {
-      token = await captcha.getToken();
-      body.data['g-recaptcha-response'] = token;
-    }
-    const response = await fetch(url, {
+    const payload = constructPayload(form);
+
+    const response = await fetch('https://klizerDemo--myaemsite--kirankm3836.aem.page/contactus.json', {
       method: 'POST',
-      headers,
-      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
     });
+
     if (response.ok) {
       submitSuccess(response, form);
     } else {
@@ -120,12 +100,13 @@ async function submitDocBasedForm(form, captcha) {
 export async function handleSubmit(e, form, captcha) {
   e.preventDefault();
   const valid = form.checkValidity();
+
   if (valid) {
     e.submitter?.setAttribute('disabled', '');
     if (form.getAttribute('data-submitting') !== 'true') {
       form.setAttribute('data-submitting', 'true');
 
-      // hide error message in case it was shown before
+      // Hide any previous error messages
       form.querySelectorAll('.form-message.show').forEach((el) => el.classList.remove('show'));
 
       if (form.dataset.source === 'sheet') {
