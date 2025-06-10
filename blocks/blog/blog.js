@@ -10,13 +10,11 @@ export default async function decorate(block) {
     const json = await resp.json();
     const assets = new Map();
 
-    console.log(json,"json")
   
     // Extract asset URLs
     json.includes?.Asset?.forEach((asset) => {
       assets.set(asset.sys.id, asset.fields.file.url);
     });
-    console.log("hieee")
     const html = json.items.map((item) => {
       const { title, summary, slug, image } = item.fields;
       const imageUrl = image ? `https:${assets.get(image.sys.id)}` : '';

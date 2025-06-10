@@ -110,7 +110,6 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 export default async function decorate(block) {
   // load nav as fragment
   const navMeta = getMetadata('nav');
-  console.log(navMeta,"block","Detailsllll")
   const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
   const fragment = await loadFragment(navPath);
 
@@ -125,14 +124,12 @@ export default async function decorate(block) {
 nav.querySelectorAll('a').forEach((anchor) => {
   let href = anchor.getAttribute('href');
 
-  console.log(href,"href")
 
   if (!href) return;
   if(href.startsWith('http://')) {
     href = href.replace('http://', '/')
   }
 
-  console.log(href,'href')
   anchor.setAttribute('href', href);
 });
 
