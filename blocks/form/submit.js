@@ -55,6 +55,11 @@ function getFieldValue(fe, payload) {
   } else if (fe.type !== 'file') {
     return fe.value;
   }
+  else if (fe.type === 'file') {
+    // Return Base64 or file name placeholder (depends on backend support)
+    console.log(fe.files[0],"fezzz")
+    return fe.files[0] || null;
+  }
   return null;
 }
 
