@@ -116,8 +116,15 @@ async function submitDocBasedForm(form, captcha) {
       url = form.dataset.action;
     }
 
+    const headers = {
+    'Content-Type': 'application/json',
+    // eslint-disable-next-line comma-dangle
+    'x-adobe-form-hostname': window?.location?.hostname
+  };
+
     const response = await fetch(url, {
       method: 'POST',
+      headers: headers,
       body: formData, // ✅ No headers — browser will handle it
     });
 
