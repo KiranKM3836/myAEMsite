@@ -100,19 +100,27 @@ async function prepareRequest(form) {
 
 async function submitDocBasedForm(form, captcha) {
   try {
-    const { headers, body, url } = await prepareRequest(form, captcha);
-    console.log(headers, body, url,"Details")
-    let token = null;
+    const formData = new FormData(form);
+
     if (captcha) {
-      token = await captcha.getToken();
-      body.data['g-recaptcha-response'] = token;
+      const token = await captcha.getToken();
+      formData.append('g-recaptcha-response', token);
     }
-    console.log(url,"url")
+
+    let url;
+    let baseUrl = getSubmitBaseUrl();
+    if (!baseUrl) {
+      baseUrl = 'https://forms.adobe.com/adobe/forms/af/submit/';
+      url = baseUrl + btoa(`${form.dataset.action}.json`);
+    } else {
+      url = form.dataset.action;
+    }
+
     const response = await fetch(url, {
       method: 'POST',
-      headers,
-      body: JSON.stringify(body),
+      body: formData, // ✅ No headers — browser will handle it
     });
+
     if (response.ok) {
       submitSuccess(response, form);
     } else {
@@ -123,6 +131,7 @@ async function submitDocBasedForm(form, captcha) {
     submitFailure(error, form);
   }
 }
+
 
 export async function handleSubmit(e, form, captcha) {
   e.preventDefault();
