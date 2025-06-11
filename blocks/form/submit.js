@@ -75,47 +75,35 @@ function constructPayload(form) {
 
 async function prepareRequest(form) {
   const { payload } = constructPayload(form);
-  const headers = {
-    'Content-Type': 'application/json',
-    // eslint-disable-next-line comma-dangle
-    'x-adobe-form-hostname': window?.location?.hostname
-  };
-  const body = { data: payload };
-  let url;
-  let baseUrl = getSubmitBaseUrl();
-  if (!baseUrl) {
-    // eslint-disable-next-line prefer-template
-    baseUrl = 'https://forms.adobe.com/adobe/forms/af/submit/';
-    url = baseUrl + btoa(`${form.dataset.action}.json`);
-  } else {
-    url = form.dataset.action;
-  }
-  return { headers, body, url };
+  const headers = { 'Content-Type': 'application/json' };
+  let url = getSubmitBaseUrl()
+    ? form.dataset.action
+    : 'https://forms.adobe.com/adobe/forms/af/submit/' + btoa(`${form.dataset.action}.json`);
+
+  return { headers, body: payload, url };
 }
 
 async function submitDocBasedForm(form, captcha) {
   try {
-    const { headers, body, url } = await prepareRequest(form, captcha);
-    let token = null;
-    if (captcha) {
-      token = await captcha.getToken();
-      body.data['g-recaptcha-response'] = token;
-    }
+    const { headers, body, url } = await prepareRequest(form);
+    console.log(await prepareRequest(form), "Details")
     const response = await fetch(url, {
       method: 'POST',
       headers,
       body: JSON.stringify(body),
     });
+
     if (response.ok) {
       submitSuccess(response, form);
     } else {
-      const error = await response.text();
-      throw new Error(error);
+      const text = await response.text();
+      throw new Error(text || response.statusText);
     }
   } catch (error) {
     submitFailure(error, form);
   }
 }
+
 
 export async function handleSubmit(e, form, captcha) {
   e.preventDefault();
