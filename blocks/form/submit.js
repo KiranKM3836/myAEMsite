@@ -75,7 +75,7 @@ function constructPayload(form) {
 
 async function prepareRequest(form) {
   const { payload } = constructPayload(form);
-  const headers = { 'Content-Type': 'application/json' };
+  const headers = { 'Content-Type': 'application/json' ,'x-adobe-form-hostname': window?.location?.hostname };
   let url = getSubmitBaseUrl()
     ? form.dataset.action
     : 'https://forms.adobe.com/adobe/forms/af/submit/' + btoa(`${form.dataset.action}.json`);
