@@ -99,6 +99,7 @@ async function prepareRequest(form) {
 }
 
 async function submitDocBasedForm(form, captcha) {
+  console.log("hie from submit")
   try {
     const formData = new FormData(form);
 
