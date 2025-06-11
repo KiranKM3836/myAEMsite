@@ -119,6 +119,21 @@ export default async function decorate(block) {
   nav.id = 'nav';
   while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
 
+  // 
+  // Fix malformed hrefs and normalize internal links - custom href
+nav.querySelectorAll('a').forEach((anchor) => {
+  let href = anchor.getAttribute('href');
+
+
+  if (!href) return;
+  if(href.startsWith('http://')) {
+    href = href.replace('http://', '/')
+  }
+
+  anchor.setAttribute('href', href);
+});
+
+  // 
   const classes = ['brand', 'sections', 'tools'];
   classes.forEach((c, i) => {
     const section = nav.children[i];
