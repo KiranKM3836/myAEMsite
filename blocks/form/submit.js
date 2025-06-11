@@ -99,36 +99,20 @@ async function prepareRequest(form) {
 }
 
 async function submitDocBasedForm(form, captcha) {
-  console.log("hie from submit")
   try {
-    const formData = new FormData(form);
-
+    const { headers, body, url } = await prepareRequest(form, captcha);
+    console.log(headers, body, url,"Details")
+    let token = null;
     if (captcha) {
-      const token = await captcha.getToken();
-      formData.append('g-recaptcha-response', token);
+      token = await captcha.getToken();
+      body.data['g-recaptcha-response'] = token;
     }
-
-    let url;
-    let baseUrl = getSubmitBaseUrl();
-    if (!baseUrl) {
-      baseUrl = 'https://forms.adobe.com/adobe/forms/af/submit/';
-      url = baseUrl + btoa(`${form.dataset.action}.json`);
-    } else {
-      url = form.dataset.action;
-    }
-
-    const headers = {
-    'Content-Type': 'application/json',
-    // eslint-disable-next-line comma-dangle
-    'x-adobe-form-hostname': window?.location?.hostname
-  };
-
+    console.log(url,"url")
     const response = await fetch(url, {
       method: 'POST',
-      headers: headers,
-      body: formData, // ✅ No headers — browser will handle it
+      headers,
+      body: JSON.stringify(body),
     });
-
     if (response.ok) {
       submitSuccess(response, form);
     } else {
@@ -139,7 +123,6 @@ async function submitDocBasedForm(form, captcha) {
     submitFailure(error, form);
   }
 }
-
 
 export async function handleSubmit(e, form, captcha) {
   e.preventDefault();
