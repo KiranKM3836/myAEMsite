@@ -18,7 +18,7 @@ export default async function decorate(block) {
         </div>
         <div class="pdp-details">
           <h1 class="pdp-title">${product.name}</h1>
-          <p class="pdp-description">${product.description && product.description}</p>
+          <p class="pdp-description">${product.description ? product.description : ''}</p>
           <p class="pdp-price">$${product.price}</p>
         </div>
         </div>
